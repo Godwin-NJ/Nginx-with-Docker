@@ -1,0 +1,34 @@
+- https://geshan.com.np/blog/2024/03/nginx-docker-compose/
+- https://mindsers.blog/en/post/https-using-nginx-certbot-docker/
+- https://dev.to/mrshanas/https-on-docker-containers-using-nginx-and-letsencrypt-3nfa
+- https://stackoverflow.com/questions/41803140/certbot-well-known-acme-challenge
+- https://www.programonaut.com/setup-ssl-with-docker-nginx-and-lets-encrypt/
+
+
+
+server {
+ listen 80;
+
+ location '/.well-known/acme-challenge' {
+    root        /var/www/demo;
+  }
+
+ location / {
+          if ($scheme = http) {
+            return 301 https://$server_name$request_uri;
+          }
+ }
+
+Which basically redirects all the requests to https, except for the acme-challenge (for auto renewal).
+ My question: Is it alright to keep location '/.well-known/acme-challenge' always 
+exposed on port 80? Or better to comment/uncomment it manually, when need to reissue 
+the certificate? Are there any security issues with that?
+
+Ans -> Acme challenge link only needed for verifying domain to this ip address
+Ans -> Yes, “well-known” folder is automatically created by cPanel in order to validate your 
+domain for AutoSSL purposes. AutoSSL is an added feature of cPanel/WHM which offer you free 
+SSL certificate for your domains, its also known as self-signed SSL certificate. 
+The folder .well-known created while the time of the domain validation process as a part 
+of AutoSSL installation.
+And it is not the file that needs to be removed, It does not cause any issue.
+
